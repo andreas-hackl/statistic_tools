@@ -1,7 +1,8 @@
 import numpy as np
 
 def sample_estimate(data, sample_idxs, estimator=np.mean):
-    return estimator([data[idx] for idx in sample_idxs], axis=0)
+    sampled_data = np.array([data[idx] for idx in sample_idxs])
+    return estimator(sampled_data, axis=0)
 
 
 def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=42):
@@ -17,7 +18,8 @@ def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=42):
     for i in range(N):
         estimates[i] = sample_estimate(data,
                                        rng.choice(idxs, size=(data.shape[0],),
-                                                  replace=True)
+                                                  replace=True),
+                                       estimator=estimator
                                       )
 
     return np.mean(estimates, axis=0), np.std(estimates, ddof=1, axis=0)

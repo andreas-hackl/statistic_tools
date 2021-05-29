@@ -1,0 +1,10 @@
+setup.py
+statistic_tools/__init__.py
+statistic_tools/autocorrelation.py
+statistic_tools/fitting.py
+statistic_tools/general.py
+statistic_tools.egg-info/PKG-INFO
+statistic_tools.egg-info/SOURCES.txt
+statistic_tools.egg-info/dependency_links.txt
+statistic_tools.egg-info/requires.txt
+statistic_tools.egg-info/top_level.txt
