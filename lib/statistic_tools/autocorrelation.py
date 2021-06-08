@@ -7,6 +7,7 @@ class Autocorrelation:
     def __init__(self, data):
         self.data = data
         self.R0 = self._auto_covariance(0)
+        self.autocov_status = False
 
     def _auto_covariance(self, tau):
         N = self.data.shape[0]
@@ -23,12 +24,15 @@ class Autocorrelation:
         self.autocov = np.array(
                                 [self._auto_covariance(t)/self.R0 for t in tau]
                                )
+        self.autocov_status = True
         return self.autocov
 
     def int_auto_correlation_time(self):
+        if self.autocov_status == False:
+            self.eval()
         ac = self.autocov
         val = 0.5
-        idx = 0
+        idx = 1
         while ac[idx] > 0:
             val += ac[idx]
             idx += 1
