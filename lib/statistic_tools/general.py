@@ -9,7 +9,8 @@ def sample_estimate(data, sample_idxs, estimator=np.mean, args=None):
         return estimator(sampled_data, axis=0)
 
 
-def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None):
+def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
+             sample_estimate_func=sample_estimate, withoriginal=False):
     if seed == None:
         seed = int(time.time())
 
@@ -21,13 +22,21 @@ def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None):
 
     idxs = range(data.shape[0])
 
-    estimates = np.empty((N,),dtype=type(data[0]))
+    estimates = []
+    if withoriginal:
+        estimate = sample_estimate_func(data, idxs, estimator=estimator,
+                                        args=args)
+        estimates.append(estimate)
+
     for i in range(N):
-        estimates[i] = sample_estimate(data,
-                                       rng.choice(idxs, size=(data.shape[0],),
+        estimate = sample_estimate_func(data,
+                                        rng.choice(idxs, size=(data.shape[0],),
                                                   replace=True),
-                                       estimator=estimator, args=args
-                                      )
+                                        estimator=estimator, args=args,
+                                        )
+        estimates.append(estimate)
+
+    estimates = np.array(estimates)
 
     return np.mean(estimates, axis=0), np.std(estimates, ddof=1, axis=0)
 
