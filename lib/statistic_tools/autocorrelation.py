@@ -37,3 +37,6 @@ class Autocorrelation:
             val += ac[idx]
             idx += 1
         return val
+
+    def tau(self):
+        return self.int_auto_correlation_time()

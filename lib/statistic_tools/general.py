@@ -38,6 +38,11 @@ def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
 
     estimates = np.array(estimates)
 
+    if data.dtype == "complex":
+        mean_data = np.mean(estimates, axis=0)
+        std_data = np.std(estimates.real, ddof=1, axis=0) + 1j*np.std(estimates.imag, ddof=1, axis=0)
+        return mean_data, std_data
+
     return np.mean(estimates, axis=0), np.std(estimates, ddof=1, axis=0)
 
 def bootstrap_samples(data, estimator=np.mean, N=None, rng=None, seed=None,
@@ -67,14 +72,14 @@ def bootstrap_samples(data, estimator=np.mean, N=None, rng=None, seed=None,
 
 def binning(data, nbins=1, estimator=np.mean):
     bin_size = data.shape[0]//nbins
-    binned_data = np.empty((nbins,),dtype=type(data[0]))
+    binned_data = []
     for i in range(nbins):
         if i != nbins-1:
-            binned_data[i]=estimator(data[i*bin_size:(i+1)*bin_size],axis=0)
+            binned_data.append(estimator(data[i*bin_size:(i+1)*bin_size],axis=0))
         else:
             # To prevent index overflow
-            binned_data[i]=estimator(data[i*bin_size:],axis=0)
-    return binned_data
+            binned_data.append(estimator(data[i*bin_size:],axis=0))
+    return np.array(binned_data)
 
 
 

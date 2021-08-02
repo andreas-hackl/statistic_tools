@@ -1,6 +1,7 @@
 setup.py
 statistic_tools/__init__.py
 statistic_tools/autocorrelation.py
+statistic_tools/chi2.py
 statistic_tools/fitting.py
 statistic_tools/general.py
 statistic_tools.egg-info/PKG-INFO
