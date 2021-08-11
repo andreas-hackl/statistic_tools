@@ -10,7 +10,8 @@ def sample_estimate(data, sample_idxs, estimator=np.mean, args=None):
 
 
 def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
-             sample_estimate_func=sample_estimate, withoriginal=False):
+             sample_estimate_func=sample_estimate, withoriginal=False,
+              sample_size=None):
     if seed == None:
         seed = int(time.time())
 
@@ -19,6 +20,9 @@ def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
 
     if N == None:
         N = data.shape[0]
+
+    if sample_size == None:
+        sample_size = data.shape[0]
 
     idxs = range(data.shape[0])
 
@@ -30,7 +34,7 @@ def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
 
     for i in range(N):
         estimate = sample_estimate_func(data,
-                                        rng.choice(idxs, size=(data.shape[0],),
+                                        rng.choice(idxs, size=(sample_size,),
                                                   replace=True),
                                         estimator=estimator, args=args,
                                         )
@@ -67,7 +71,6 @@ def bootstrap_samples(data, estimator=np.mean, N=None, rng=None, seed=None,
                                        estimator=estimator, args=args
                                       )
     return estimates
-
 
 
 def binning(data, nbins=1, estimator=np.mean):
