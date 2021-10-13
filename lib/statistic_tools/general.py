@@ -11,7 +11,7 @@ def sample_estimate(data, sample_idxs, estimator=np.mean, args=None):
 
 def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
              sample_estimate_func=sample_estimate, withoriginal=False,
-              sample_size=None):
+              sample_size=None, withcov=False):
     if seed == None:
         seed = int(time.time())
 
@@ -42,6 +42,9 @@ def bootstrap(data, estimator=np.mean, N=None, rng=None, seed=None, args=None,
 
     estimates = np.array(estimates)
 
+    if withcov:
+        return np.mean(estimates, axis=0), np.cov(np.transpose(estimates))
+
     if data.dtype == "complex":
         mean_data = np.mean(estimates, axis=0)
         std_data = np.std(estimates.real, ddof=1, axis=0) + 1j*np.std(estimates.imag, ddof=1, axis=0)
@@ -62,14 +65,20 @@ def bootstrap_samples(data, estimator=np.mean, N=None, rng=None, seed=None,
 
     idxs = range(data.shape[0])
 
-    estimates = np.empty((N,), dtype=type(data[0]))
+    estimates = []
 
     for i in range(N):
-        estimates[i] = sample_estimate(data,
-                                       rng.choice(idxs, size=(data.shape[0],),
-                                                  replace=True),
-                                       estimator=estimator, args=args
-                                      )
+        estimate = sample_estimate(data,
+                                   rng.choice(idxs, size=(data.shape[0],),
+                                              replace=True),
+                                   estimator=estimator, args=args
+                                   )
+        estimates.append(estimate)
+    try:
+        estimates = np.array(estimates)
+    except:
+        None
+
     return estimates
 
 
